@@ -119,6 +119,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FSharp.Stats">
+      <Version>0.4.7</Version>
+    </PackageReference>
     <PackageReference Include="LiveCharts">
       <Version>0.9.7</Version>
     </PackageReference>

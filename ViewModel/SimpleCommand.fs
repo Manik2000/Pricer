@@ -3,7 +3,7 @@
 open System.Windows.Input
 open System
 
-//WPF-friendly simple command, can always execute
+// WPF-friendly simple command, can always execute
 type SimpleCommand(action :  obj -> unit) = 
     let canExecuteChanged = new Event<EventHandler, EventArgs>()
     interface ICommand with

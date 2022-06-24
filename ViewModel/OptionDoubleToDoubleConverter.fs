@@ -15,9 +15,9 @@ type OptionDoubleToDoubleConverter() =
         member this.Convert (value : obj, _ : Type, _ : obj, _ : CultureInfo) =
             match value with
              | null -> null
-             | :? option<Money> as ovalue -> 
+             | :? option<float> as ovalue -> 
                 match ovalue with 
-                | Some v -> box v 
+                | Some v -> box (System.Math.Round (v, 2)) 
                 | None -> null
 
         member this.ConvertBack (_ : obj, _ : Type, _ : obj, _ : CultureInfo) =

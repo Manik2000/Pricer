@@ -5,99 +5,101 @@ open System.Collections.ObjectModel
 open LiveCharts;
 open LiveCharts.Wpf;
 
-//Strating point of the viewmodel that drives the UI
-//It aggregates all relevant parts of the UI, and exposes them via properties
+
 type MainViewModel() = 
     inherit ViewModelBase()
 
-    let trades = ObservableCollection<PaymentViewModel>()
+    let options = ObservableCollection<OptionViewModel>()
     let data = ObservableCollection<ConfigurationViewModel>()
     let calculationParameters = ObservableCollection<ConfigurationViewModel>()
-
+    
     let getDataConfiguration () = data |> Seq.map (fun conf -> (conf.Key , conf.Value)) |> Map.ofSeq
     let getCalculationConfiguration () = calculationParameters |> Seq.map (fun conf -> (conf.Key , conf.Value)) |> Map.ofSeq
     
+
     (* add some dummy data rows *)
     do
-        data.Add(ConfigurationViewModel { Key = "FX::USDPLN"; Value = "3.76" })
-        data.Add(ConfigurationViewModel { Key = "FX::USDEUR"; Value = "0.87" })
-        data.Add(ConfigurationViewModel { Key = "FX::EURGBP"; Value = "0.90" })
-        data.Add(ConfigurationViewModel { Key = "r"; Value = "0.05" }) // changed here
+        data.Add(ConfigurationViewModel { Key = "r"             ; Value = "0.05" }) 
+        data.Add(ConfigurationViewModel { Key = "volatility"    ; Value = "0.2"  })
+        data.Add(ConfigurationViewModel { Key = "current price" ; Value = "1000" })
 
-        calculationParameters.Add(ConfigurationViewModel { Key = "monteCarlo::runs"; Value = "100" })
-        calculationParameters.Add(ConfigurationViewModel { Key = "valuation::baseCurrency"; Value = "USD" })
-        calculationParameters.Add(ConfigurationViewModel { Key = "valuation::knownCurrencies"; Value = "USD PLN EUR GBP" })
-        calculationParameters.Add(ConfigurationViewModel { Key = "methodology::bumpRisk"; Value = "True" })
-        calculationParameters.Add(ConfigurationViewModel { Key = "methodology::bumpSize"; Value = "0.0001" })
+        calculationParameters.Add(ConfigurationViewModel { Key = "monteCarlo::runs" ; Value = "1000" })
+        calculationParameters.Add(ConfigurationViewModel { Key = "Number of paths"  ; Value = "5" })
 
-    let summary = ObservableCollection<SummaryRow>()
-
-    (* trade commands *)
-    let refreshSummary() = 
-        summary.Clear()
-        
-        trades 
-        |> Seq.choose(fun t -> t.Value) // find correctly evaluated trades
-        |> Seq.groupBy(fun m -> m.Currency)  // group by currency
-        |> Seq.map(fun (ccy, v) -> { Currency = ccy; Value = v |> Seq.map (fun m -> m.Value) |> Seq.sum }) // extract values, calculate a sum
-        |> Seq.iter(summary.Add) // add to summary page
 
     let calculateFun _ = do
-            trades |> Seq.iter(fun trade -> trade.Calculate(getDataConfiguration (), getCalculationConfiguration ()))
-            refreshSummary()
+            options |> Seq.iter(fun option -> option.Calculate(getDataConfiguration (), getCalculationConfiguration ()))
 
     let calculate = SimpleCommand calculateFun
 
-    let addTrade = SimpleCommand(fun _ -> 
+    let addOption = SimpleCommand(fun _ -> 
             let currentConfig = getCalculationConfiguration ()
-            PaymentRecord.Random currentConfig |> PaymentViewModel |> trades.Add
+            OptionRecord.Random currentConfig |> OptionViewModel |> options.Add
             )
 
-    let removeTrade = SimpleCommand(fun trade -> trades.Remove (trade :?> PaymentViewModel) |> ignore)
-    let clearTrades = SimpleCommand(fun _ -> trades.Clear () )
+    let removeOption = SimpleCommand(fun option -> options.Remove (option :?> OptionViewModel) |> ignore)
+    let clearOptions = SimpleCommand(fun _ -> options.Clear () )
+
 
     (* charting *)
-    
     let chartSeries = SeriesCollection()
+    
+    let getPlottingData () = 
+        let plottingData = getDataConfiguration ()
+        let plottingParams = getCalculationConfiguration ()
+        let N = if plottingParams.ContainsKey "Number of paths"  then int plottingParams["Number of paths"] else 5
+        let S0 = if plottingData.ContainsKey "current price" then float plottingData["current price"] else 1000.0
+        let r = if plottingData.ContainsKey "r" then float plottingData["r"] else 0.05
+        let vol = if plottingData.ContainsKey "volatility" then float plottingData["volatility"] else 0.2
+        vol, r, S0, N
 
-    let predefinedChartFunctions = [| (fun x -> sin x); (fun x -> x); (fun x -> x*x) |] 
 
-    let addChartSeriesFun _ = do
-                let ls = LineSeries()
-                let multiplier = System.Random().NextDouble()
-                let mapFun = predefinedChartFunctions.[ System.Random().Next(predefinedChartFunctions.Length) ]
-                ls.Title <- sprintf "Test series %0.2f" multiplier
-                let series = seq { for i in 1 .. 100 do yield (0.01 * multiplier * double i) }
-                ls.Values <- ChartValues<float> (Seq.map mapFun series)
-                chartSeries.Add(ls)
+    let addChartSeriesFun _ = do 
+        chartSeries.Clear ()
 
+        let plotParams = getPlottingData ()
+        let one_path = OptionPricer().geometricBrownian 
+
+        let time = 0.5
+        let (n, (vol, r, S0, N)) = (int(time * 180.0), plotParams)
+
+        let addLine () = 
+            let ls = LineSeries()
+            ls.Values <- ChartValues<float> (one_path n S0 r vol time)
+            chartSeries.Add(ls)
+            
+        seq { 1 .. int N } |> Seq.iter (fun _ -> addLine () |> ignore)
+        
     let addChartSeries = SimpleCommand addChartSeriesFun
+
 
     (* add a few series for a good measure *)
     do
         addChartSeriesFun ()
-        addChartSeriesFun ()
+
 
     (* market data commands *)
     let addMarketDataRecord = SimpleCommand (fun _ -> data.Add(ConfigurationViewModel { Key = ""; Value = "" }))
     let removeMarketDataRecord = SimpleCommand (fun record -> data.Remove(record :?> ConfigurationViewModel) |> ignore)
     let clearMarketDataRecord = SimpleCommand (fun _ -> data.Clear ())
 
+
     (* calculation parameters commands *)
     let addCalcParameterRecord = SimpleCommand (fun _ -> calculationParameters.Add(ConfigurationViewModel { Key = ""; Value = "" }))
     let removeCalcParameterRecord = SimpleCommand (fun record -> calculationParameters.Remove(record :?> ConfigurationViewModel) |> ignore)
     let clearCalcParameterRecord = SimpleCommand (fun _ -> calculationParameters.Clear ())
 
+
     (* automatically update summary when dependency data changes (entries added/removed)  *)
     do
-        trades.CollectionChanged.Add calculateFun
+        options.CollectionChanged.Add calculateFun
         data.CollectionChanged.Add calculateFun
         calculationParameters.CollectionChanged.Add calculateFun
 
     (* commands *)
-    member this.AddTrade = addTrade 
-    member this.RemoveTrade = removeTrade
-    member this.ClearTrades = clearTrades
+    member this.AddOption = addOption 
+    member this.RemoveOption = removeOption
+    member this.ClearOptions = clearOptions
     member this.Calculate = calculate
 
     member this.AddMarketData = addMarketDataRecord
@@ -110,12 +112,11 @@ type MainViewModel() =
 
 
     (* data fields *)
-    member this.Trades = trades
+    member this.Options = options
     member this.Data = data
     member this.CalculationParameters = calculationParameters
-    member this.Summary = summary
 
+    
     (* charting *)
-
     member this.ChartSeries = chartSeries
     member this.AddChartSeries = addChartSeries

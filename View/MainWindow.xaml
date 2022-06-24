@@ -26,55 +26,17 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.Resources>
                 <Style TargetType="materialDesign:Card">
-                    <Setter Property="Padding" Value ="28" />
-                    <Setter Property="Margin" Value ="14" />
+                    <Setter Property="Padding" Value="28" />
+                    <Setter Property="Margin" Value="14" />
                 </Style>
                 <vm:OptionDoubleToDoubleConverter x:Key="stripOption"/>
             </Grid.Resources>
 
-            <!-- SUMMARY -->
-            <materialDesign:Card Grid.Row="1">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="160"/>
-                        <ColumnDefinition Width="160"/>
-                        <ColumnDefinition Width="160"/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" Width="120" HorizontalAlignment="Left">
-                        <TextBlock.ToolTip>
-                            <ToolTip Style="{DynamicResource MaterialDesignToolTip}">
-                                Value of trades in the portfolio, aggregated per currency
-                            </ToolTip>
-                        </TextBlock.ToolTip>
-          Summary
-                    </TextBlock>
-
-                    <TextBlock Grid.Row="1" Grid.Column="1" Width="100" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Currency"/>
-                    <TextBlock Grid.Row="1" Grid.Column="2" Width="100" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Value"/>
-
-                    <ItemsControl Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding Summary}" >
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type vm:SummaryRow}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Width="140" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding Currency, Mode=OneWay}"/>
-                                    <TextBlock Width="140" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding Value, Mode=OneWay, StringFormat=N2}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Grid>
-            </materialDesign:Card>
-
-            <!-- TRADES -->
+            <!-- Options -->
             <materialDesign:Card Grid.Row="2">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -88,26 +50,25 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- card header -->
-                    <TextBlock Grid.Row="0" Grid.Column="0"
-                   Margin="4" Style="{DynamicResource MaterialDesignTitleTextBlock}" 
-                   Width="120" HorizontalAlignment="Left">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="4"
+                               Style="{DynamicResource MaterialDesignTitleTextBlock}" 
+                               Width="120" HorizontalAlignment="Left">
                         <TextBlock.ToolTip>
                             <ToolTip Style="{DynamicResource MaterialDesignToolTip}">
-                                Trades in the portfolio
+                                Different Options
                             </ToolTip>
                         </TextBlock.ToolTip>
-          Trades
+                        Options
                     </TextBlock>
 
                     <!-- action buttons -->
                     <StackPanel Grid.Column="0" Grid.Row="1">
-                        <Button Margin="6,3" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ClearTrades}" Content="Clear"/>
+                        <Button Margin="6,3" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ClearOptions}" Content="Clear"/>
                         <Button Margin="6,3" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding Calculate}" Content="Recalculate all"/>
-                        <Button Margin="6,3" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding AddTrade}" Content="New"/>
+                        <Button Margin="6,3" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding AddOption}" Content="New"/>
                     </StackPanel>
 
-                    <!-- trades grid -->
-
+                    <!-- options grid -->
                     <Grid Grid.Column="1" Grid.Row="1">
 
                         <Grid.RowDefinitions>
@@ -118,41 +79,37 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="60"/>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="150"/>
                         </Grid.ColumnDefinitions>
 
                         <!-- table header -->
 
-                        <TextBlock Grid.Row="1" Grid.Column="1" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Trade Name"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Expiry"/>
-                        <TextBlock Grid.Row="1" Grid.Column="3" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Currency"/>
-                        <TextBlock Grid.Row="1" Grid.Column="4" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Right" Text="Principal"/>
-                        <TextBlock Grid.Row="1" Grid.Column="5" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Right" Text="Value"/>
-
+                        <TextBlock Grid.Row="1" Grid.Column="1" Width="100" Margin="2" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Center" Text="Option Name"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Width="100" Margin="2" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Center" Text="Option Type"/>
+                        <TextBlock Grid.Row="1" Grid.Column="3" Width="160" Margin="2" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Center" Text="Maturity"/>
+                        <TextBlock Grid.Row="1" Grid.Column="5" Width="100" Margin="2" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Center" Text="Strike"/>
+                                                
                         <!-- items -->
-                        <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6" ItemsSource="{Binding Trades}" >
+                        <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="9" ItemsSource="{Binding Options}" >
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type vm:PaymentViewModel}">
+                                <DataTemplate DataType="{x:Type vm:OptionViewModel}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="60"/>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="160"/>
+                                            <ColumnDefinition Width="150"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Button Width="45" Command="{Binding DataContext.RemoveTrade, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding}" FontSize="10" Margin="3">✖</Button>
-                                        <TextBox Grid.Column="1" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding TradeName}"/>
-                                        <TextBox Grid.Column="2" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Expiry}"/>
-                                        <TextBox Grid.Column="3" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Currency}"/>
-                                        <TextBox Grid.Column="4" TextAlignment="Right" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Principal}"/>
-                                        <TextBlock Grid.Column="5" TextAlignment="Right" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding Value, Mode=OneWay, Converter={StaticResource stripOption}}"/>
+                                        <Button Width="45" Command="{Binding DataContext.RemoveOption, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding}" FontSize="10" Margin="3">✖</Button>
+                                        <TextBox Grid.Column="1" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding OptionName}"/>
+                                        <TextBox Grid.Column="2" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding OptionType}"/>
+                                        <TextBox Grid.Column="3" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Maturity}"/>
+                                        <TextBox Grid.Column="5" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Strike}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -160,9 +117,81 @@
                     </Grid>
                 </Grid>
             </materialDesign:Card>
+            
+        <!-- Options values, deltas -->
+        <materialDesign:Card Grid.Row="3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- MARKET DATA -->
-            <materialDesign:Card Grid.Row="3">
+            <TextBlock Grid.Row="0" Grid.Column="0" 
+                   Margin="4" Style="{DynamicResource MaterialDesignTitleTextBlock}" 
+                   Width="200" HorizontalAlignment="Left">
+                <TextBlock.ToolTip>
+                    <ToolTip Style="{DynamicResource MaterialDesignToolTip}">
+                        Different Options
+                    </ToolTip>
+                </TextBlock.ToolTip>
+                        Options prices and parameters
+            </TextBlock>
+
+
+            <!-- options grid -->
+            <Grid Grid.Column="0" Grid.Row="1">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="180"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- table header -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Width="100" Margin="2" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Center" Text="Option Name"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Width="100" Margin="2" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Center" Text="Option type"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Width="180" Margin="2" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Center" Text="European Option Value"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" Width="180" Margin="2" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Center" Text="Asian Option Value"/>
+                <TextBlock Grid.Row="0" Grid.Column="4" Width="160" Margin="2" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Center" Text="Delta"/>
+
+                        <!-- items -->
+                <ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" ItemsSource="{Binding Options}" >
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:OptionViewModel}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="180"/>
+                                    <ColumnDefinition Width="180"/>
+                                    <ColumnDefinition Width="160"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" TextAlignment="Center" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding OptionName}"/>
+                                <TextBlock Grid.Column="1" TextAlignment="Center" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding OptionType}"/>
+                                <TextBlock Grid.Column="2" TextAlignment="Center" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding EuropeanOption, Mode=OneWay, Converter={StaticResource stripOption}}"/>
+                                <TextBlock Grid.Column="3" TextAlignment="Center" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding AsianOption, Mode=OneWay, Converter={StaticResource stripOption}}"/>
+                                <TextBlock Grid.Column="4" TextAlignment="Center" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding Delta, Mode=OneWay, Converter={StaticResource stripOption}}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Grid>
+        </materialDesign:Card>
+
+
+
+        <!-- MARKET DATA -->
+            <materialDesign:Card Grid.Row="4">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -184,8 +213,8 @@
                                 Market data
                             </ToolTip>
                         </TextBlock.ToolTip>
-          Market data
-                    </TextBlock>
+                                Market data
+                        </TextBlock>
 
                     <!-- action buttons -->
                     <StackPanel Grid.Column="0" Grid.Row="1">
@@ -207,13 +236,14 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <!-- table header -->
 
                         <!-- market data & configuration grid -->
-                        <TextBlock Grid.Row="1" Grid.Column="0" Width="140" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Key"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Width="140" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Value"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Width="340" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Key"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Width="340" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Value"/>
 
                         <!-- items -->
                         <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Data}" Margin="6">
@@ -221,8 +251,8 @@
                                 <DataTemplate DataType="{x:Type vm:ConfigurationViewModel}">
                                     <StackPanel Orientation="Horizontal">
                                         <Button Width="45" Command="{Binding DataContext.RemoveMarketData, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding}" FontSize="10" Margin="3">✖</Button>
-                                        <TextBox Width="340" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Key}"/>
-                                        <TextBox Width="340" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Value}"/>
+                                        <TextBox Width="340" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Key}"/>
+                                        <TextBox Width="340" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Value}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -234,7 +264,7 @@
             </materialDesign:Card>
 
             <!-- CONFIGURATION DATA -->
-            <materialDesign:Card Grid.Row="4">
+            <materialDesign:Card Grid.Row="5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -255,8 +285,8 @@
                             <ToolTip Style="{DynamicResource MaterialDesignToolTip}">
                                 Configuration data
                             </ToolTip>
-                        </TextBlock.ToolTip>
-          Configuration data
+                         </TextBlock.ToolTip>
+                        Configuration data
                     </TextBlock>
 
                     <!-- action buttons -->
@@ -277,15 +307,11 @@
                             <ColumnDefinition Width="140"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- table header -->
-
                         <!-- market data & configuration grid -->
-                        <TextBlock Grid.Row="1" Grid.Column="0" Width="140" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Key"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Width="140" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Value"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Width="340" Margin="2" TextAlignment="Center" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Key"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Width="340" Margin="2" TextAlignment="Center" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="Value"/>
 
                         <!-- items -->
                         <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding CalculationParameters}" Margin="6" >
@@ -293,8 +319,8 @@
                                 <DataTemplate DataType="{x:Type vm:ConfigurationViewModel}">
                                     <StackPanel Orientation="Horizontal">
                                         <Button Width="45" Command="{Binding DataContext.RemoveCalcParameter, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding}" FontSize="10" Margin="3">✖</Button>
-                                        <TextBox Width="340" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Key}"/>
-                                        <TextBox Width="340" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Value}"/>
+                                        <TextBox Width="340" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Key}"/>
+                                        <TextBox Width="340" Margin="4" TextAlignment="Center" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Value}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -304,7 +330,7 @@
             </materialDesign:Card>
 
             <!-- CHARTS -->
-            <materialDesign:Card Grid.Row="5">
+            <materialDesign:Card Grid.Row="6">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -324,16 +350,23 @@
                                 Charts for data used in the portfolio
                             </ToolTip>
                         </TextBlock.ToolTip>
-                    Charts
+                        Prices simulation
                     </TextBlock>
 
                     <!-- action buttons -->
                     <StackPanel Grid.Column="0" Grid.Row="1">
-                        <Button Margin="6,3" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding AddChartSeries}" Content="Add series"/>
+                        <Button Margin="6,3" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding AddChartSeries}" Content="Draw series" Cursor="Hand"/>
                     </StackPanel>
 
-                    <lvc:CartesianChart Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Width="270" Height="270" Series="{Binding ChartSeries}" ></lvc:CartesianChart>
-
+                    <lvc:CartesianChart Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Width="560" Height="400" Margin="5 ,45, 0,0" Series="{Binding ChartSeries}" >
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Title="Days ahead" Margin="1"></lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Underlying prices" Margin="1"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+                   
                 </Grid>
             </materialDesign:Card>
         </Grid>

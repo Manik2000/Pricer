@@ -11,13 +11,15 @@
     <Compile Include="SimpleCommand.fs" />
     <Compile Include="ViewModelBase.fs" />
     <Compile Include="ConfigurationViewModel.fs" />
-    <Compile Include="PaymentModel.fs" />
-    <Compile Include="PaymentViewModel.fs" />
+    <Compile Include="OptionModel.fs" />
+    <Compile Include="OptionViewModel.fs" />
     <Compile Include="MainViewModel.fs" />
     <Compile Include="OptionDoubleToDoubleConverter.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Extreme.Numerics" Version="8.1.7" />
+    <PackageReference Include="FSharp.Stats" Version="0.4.7" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
   </ItemGroup>
 
