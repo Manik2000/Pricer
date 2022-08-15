@@ -17,7 +17,7 @@ type OptionDoubleToDoubleConverter() =
              | null -> null
              | :? option<float> as ovalue -> 
                 match ovalue with 
-                | Some v -> box (System.Math.Round (v, 2)) 
+                | Some v -> box (System.Math.Round (v, 3)) 
                 | None -> null
 
         member this.ConvertBack (_ : obj, _ : Type, _ : obj, _ : CultureInfo) =
